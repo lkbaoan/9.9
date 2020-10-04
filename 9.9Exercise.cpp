@@ -11,13 +11,13 @@ class CashRegister
 
         CashRegister(double rate);
 
-        void clear();
+        void reset_sales();
         void add_item(double price);
-        double get_total() const;
-        int get_count() const;
         void add_taxable_item(double price);
         double get_total_tax();
         void display_total_tax();
+        double get_sales_total() const;
+        int get_sales_count() const;
     private:
         vector<double> itemPrices;
         double tax_rate;
@@ -33,9 +33,11 @@ CashRegister::CashRegister(double rate)
     itemPrices.clear();
 }
 
-void CashRegister::clear()
+void CashRegister::reset_sales()
 {
-   itemPrices.clear();
+    tax_total = 0.00;
+    tax_item = 0.00;
+    itemPrices.clear();
 }
 
 void CashRegister::add_item(double price)
@@ -43,12 +45,12 @@ void CashRegister::add_item(double price)
     itemPrices.push_back(price);
 }
 
-double CashRegister::get_total() const
+double CashRegister::get_sales_total() const
 {
     return accumulate(itemPrices.begin(), itemPrices.end(), tax_total);
 }
 
-int CashRegister::get_count() const
+int CashRegister::get_sales_count() const
 {
    return itemPrices.size(); 
 }
@@ -66,13 +68,12 @@ double CashRegister::get_total_tax()
 
 void display(CashRegister& reg)
 {
-    cout << "Item " << reg.get_count() << ": $" << fixed << setprecision(2) << reg.get_total() << "\t\tInclude tax: $" << reg.get_total_tax() << endl;
+    cout << "Item " << reg.get_sales_count() << ": $" << fixed << setprecision(2) << reg.get_sales_total() << "\t\tInclude tax: $" << reg.get_total_tax() << endl;
 }
 
 int main()
 {
     CashRegister register1(5);
-    register1.clear();
     register1.add_item(100);
     display(register1);
     register1.add_item(200);
@@ -82,6 +83,20 @@ int main()
     register1.add_taxable_item(100);
     display(register1);
     register1.add_taxable_item(200);
+    display(register1);
+
+    cout << endl;
+    register1.reset_sales();
+
+    register1.add_item(100);
+    display(register1);
+    register1.add_item(100);
+    display(register1);
+    register1.add_item(200);
+    display(register1);
+    register1.add_taxable_item(200);
+    display(register1);
+    register1.add_taxable_item(300);
     display(register1);
     return 0;
 }
